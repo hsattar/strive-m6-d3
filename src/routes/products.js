@@ -19,8 +19,14 @@ productsRouter.route('/')
                             description: { [Op.iLike]: `%${req.query.search}%` }
                         }
                     ]
+                }),
+                ...(req.query.price && {
+                    price: {
+                        [Op.between] : req.query.price.split(',')
+                    }
                 })
-            }
+            },
+            order: [['name', 'ASC']]
         })
         res.send(product)
     } catch (error) {
