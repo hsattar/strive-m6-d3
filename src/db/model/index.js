@@ -1,3 +1,7 @@
 import Product from "./products.js"
+import Review from "./reviews.js"
 
-export { Product }
+Product.hasMany(Review, { onDelete: 'CASCADE' })
+Review.belongsTo(Product, { onDelete: 'CASCADE' })
+
+export { Product, Review }
