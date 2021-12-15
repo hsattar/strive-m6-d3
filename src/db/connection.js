@@ -6,13 +6,17 @@ const { DB_NAME, DB_USER, DB_PASS, DB_HOST, DB_DIALECT} = process.env
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     host: DB_HOST,
     dialect: DB_DIALECT
-}, { logging: false })
+})
 
 export const testDBConnection =  async () => {
     try {
-        await sequelize.authenticate()
+        await sequelize.authenticate({ logging: false })
         console.log('DB Test Success')
+        await sequelize.sync()
+        console.log('DB Connected')
     } catch (error) {
         console.log(error)
     }
 }
+
+export default sequelize
