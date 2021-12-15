@@ -1,12 +1,27 @@
 import { Router } from "express"
-import { Product } from "../db/model/index.js"
+import { Product, Review } from "../db/model/index.js"
+import { Op } from 'sequelize'
 
 const productsRouter = Router()
 
 productsRouter.route('/')
 .get(async (req, res, next) => {
     try {
-        const product = await Product.findAll()
+        const product = await Product.findAll({ 
+            include: Review,
+            where: {
+                ...(req.query.search && {
+                    [Op.or]: [
+                        {
+                            name: { [Op.iLike]: `%${req.query.search}%` }
+                        },
+                        {
+                            description: { [Op.iLike]: `%${req.query.search}%` }
+                        }
+                    ]
+                })
+            }
+        })
         res.send(product)
     } catch (error) {
         console.log(error)
