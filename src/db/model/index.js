@@ -1,3 +1,3 @@
-import Product from "./products"
+import Product from "./products.js"
 
 export { Product }
