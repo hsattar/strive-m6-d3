@@ -8,7 +8,22 @@ productsRouter.route('/')
 .get(async (req, res, next) => {
     try {
         const product = await Product.findAll({ 
-            include: [{ model: Review, include: User }, { model: Category }],
+            attributes: { exclude: ['userId'] },
+            include: [
+                { 
+                    model: Review,
+                    attributes: ['text', 'updatedAt'],
+                    include: {
+                        model: User,
+                        attributes: ['name', 'lastName']
+                    } 
+                }, 
+                { 
+                    model: Category,
+                    through: { attributes: [] },
+                    attributes: ['name']
+                }
+            ],
             where: {
                 ...(req.query.search && {
                     [Op.or]: [
