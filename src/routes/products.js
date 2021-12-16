@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { Product, Review } from "../db/model/index.js"
+import { Product, Review, User, Category, ProductCategory } from "../db/model/index.js"
 import { Op } from 'sequelize'
 
 const productsRouter = Router()
@@ -8,7 +8,7 @@ productsRouter.route('/')
 .get(async (req, res, next) => {
     try {
         const product = await Product.findAll({ 
-            include: Review,
+            include: [{ model: Review, include: User }, { model: Category }],
             where: {
                 ...(req.query.search && {
                     [Op.or]: [
@@ -35,7 +35,10 @@ productsRouter.route('/')
 })
 .post(async (req, res, next) => {
     try {
-        const product = await Product.create(req.body)
+        const { categoryId, ...rest } = req.body
+        const product = await Product.create(rest)
+        const productCategories = categoryId.map(category => ({ productId: product.id, categoryId: category }))
+        await ProductCategory.bulkCreate(productCategories)
         res.send(product)
     } catch (error) {
         console.log(error)
