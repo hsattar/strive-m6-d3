@@ -41,7 +41,10 @@ productsRouter.route('/')
                     }
                 })
             },
-            order: [['name', 'ASC']]
+            order: [['name', 'ASC']],
+            
+            limit: req.query.results || 2,
+            offset: Number(req.query.results * (req.query.page - 1)) || 0
         })
         res.send(product)
     } catch (error) {
