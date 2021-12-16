@@ -16,5 +16,5 @@ server.use('/reviews', reviewsRouter)
 server.listen(port, async () => {
     console.log(`Server Running on Port ${port}`)
     testDBConnection()
-    await sequelize.sync()
+    await sequelize.sync({ force: true })
 })
